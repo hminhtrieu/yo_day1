@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface CourseService {
     List<CourseResponse> findAll();
+    List<CourseResponse> findByCourseActive();
     Optional<CourseResponse> findById(Long id);
     CourseResponse create(CourseUpsertRequest request);
     CourseResponse update(CourseUpsertRequest request, Long id);

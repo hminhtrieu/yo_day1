@@ -43,8 +43,6 @@ public class ParentServiceImpl implements ParentService {
     public ParentResponse create(ParentUpsertRequest request)
     {
         Parent parent = mapper.map(request,Parent.class);
-        parent.setCreatedAt(LocalDateTime.now());
-        parent.setUpdatedAt(LocalDateTime.now());
         Parent result = parentRepository.save(parent);
         return map((result));
     }
@@ -53,8 +51,6 @@ public class ParentServiceImpl implements ParentService {
     {
         Parent parent = mapper.map(request,Parent.class);
         parent.setId(id);
-        parent.setCreatedAt(LocalDateTime.now());
-        parent.setUpdatedAt(LocalDateTime.now());
         Parent result = parentRepository.save(parent);
         return map((result));
     }

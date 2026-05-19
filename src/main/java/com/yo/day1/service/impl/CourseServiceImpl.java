@@ -34,6 +34,11 @@ public class CourseServiceImpl implements CourseService {
                 .toList();
     }
 
+    @Override
+    public List<CourseResponse> findByCourseActive()
+    {
+        return courseRepository.findByCourseActive();
+    }
     public Optional<CourseResponse> findById(Long id)
     {
         return courseRepository.findById(id).map(this::map);
@@ -42,8 +47,6 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse create(CourseUpsertRequest request)
     {
         Course course = mapper.map(request,Course.class);
-        course.setCreatedAt(LocalDateTime.now());
-        course.setUpdatedAt(LocalDateTime.now());
         Course result = courseRepository.save(course);
         return map(result);
     }
@@ -52,8 +55,6 @@ public class CourseServiceImpl implements CourseService {
     {
         Course course = mapper.map(request,Course.class);
         course.setId(id);
-        course.setCreatedAt(LocalDateTime.now());
-        course.setUpdatedAt(LocalDateTime.now());
         Course result = courseRepository.save(course);
         return map(result);
     }

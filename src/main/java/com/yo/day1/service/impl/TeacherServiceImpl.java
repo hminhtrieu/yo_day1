@@ -43,8 +43,6 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherResponse create(TeacherUpsertRequest req)
     {
         Teacher teacher = mapper.map(req,Teacher.class);
-        teacher.setCreatedAt(LocalDateTime.now());
-        teacher.setUpdatedAt(LocalDateTime.now());
         Teacher result = teacherRepository.save(teacher);
         return map(result);
     }
@@ -53,8 +51,6 @@ public class TeacherServiceImpl implements TeacherService {
     {
         Teacher teacher = mapper.map(req,Teacher.class);
         teacher.setId(id);
-        teacher.setCreatedAt(LocalDateTime.now());
-        teacher.setUpdatedAt(LocalDateTime.now());
         Teacher result = teacherRepository.save(teacher);
         return map(result);
     }

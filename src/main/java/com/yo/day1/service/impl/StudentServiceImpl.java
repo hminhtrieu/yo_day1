@@ -45,8 +45,6 @@ public class StudentServiceImpl implements StudentService {
     {
         Student stu = mapper.map(req,Student.class);
         parentRepository.findById(req.getParentId()).ifPresent(p->stu.setParent(p));
-        stu.setCreatedAt(LocalDateTime.now());
-        stu.setUpdatedAt(LocalDateTime.now());
         Student result = studentRepository.save(stu);
         return map(result);
     }
@@ -56,8 +54,6 @@ public class StudentServiceImpl implements StudentService {
         Student stu = mapper.map(req,Student.class);
         stu.setId(id);
         parentRepository.findById(req.getParentId()).ifPresent(p->stu.setParent(p));
-        stu.setCreatedAt(LocalDateTime.now());
-        stu.setUpdatedAt(LocalDateTime.now());
         Student result = studentRepository.save(stu);
         return map(result);
     }
