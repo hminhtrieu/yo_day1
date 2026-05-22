@@ -52,6 +52,9 @@ public class RoomServiceImpl implements RoomService {
         return map(response);
     }
 
-
+    public void delete(Long id)
+    {
+        roomRepository.deleteById(id);
+    }
 
 }

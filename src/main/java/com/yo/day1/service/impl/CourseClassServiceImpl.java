@@ -90,5 +90,10 @@ public class CourseClassServiceImpl implements CourseClassService {
 
     }
 
+    public void delete(Long id)
+    {
+        courseRepository.deleteById(id);
+    }
+
 
 }

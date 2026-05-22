@@ -11,4 +11,5 @@ public interface RoomService{
     Optional<RoomResponse> findById(long id);
     RoomResponse save(RoomUpsertRequest request);
     RoomResponse save(RoomUpsertRequest request, long id);
+    void delete(Long id);
 }

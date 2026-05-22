@@ -42,4 +42,11 @@ public class RoomController {
         return ApiResponse.success(roomService.save(request,id));
     }
 
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> delete(@PathVariable Long id)
+    {
+        roomService.delete(id);
+        return ApiResponse.success("deleted");
+    }
+
 }
