@@ -1,5 +1,6 @@
 package com.yo.day1.service;
 
+import com.yo.day1.domain.entity.User;
 import com.yo.day1.dto.auth.*;
 
 public interface AuthService {
@@ -7,4 +8,5 @@ public interface AuthService {
     AuthResponse refresh(RefreshTokenRequest request);
     void changePassword(String username, ChangePasswordRequest request);
     CurrentUserResponse me(String username);
+    User findActiveUserByUsername(String username);
 }
