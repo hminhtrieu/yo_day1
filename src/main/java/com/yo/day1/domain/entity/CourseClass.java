@@ -46,7 +46,7 @@ public class CourseClass extends AuditableEntity {
     private int maxStudents;
 
     @Column(name = "tuition_fee", columnDefinition = "decimal(12,2)")
-    private Double tuitionFee;
+    private float tuitionFee;
 
     @Enumerated(EnumType.STRING)
     private ClassStatus status = ClassStatus.OPEN;

@@ -10,6 +10,7 @@ import com.yo.day1.service.CourseClassService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -95,5 +96,11 @@ public class CourseClassServiceImpl implements CourseClassService {
         courseRepository.deleteById(id);
     }
 
+    //get thi phai lay object
+    @Transactional(readOnly = true)
+    public CourseClass getCourseClass(Long id) throws NotFoundException {
+        return courseClassRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Course class not found: " + id));
+    }
 
 }

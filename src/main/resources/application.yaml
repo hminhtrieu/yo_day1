@@ -25,3 +25,13 @@ app:
     secret: 01234567890123456789012345678912
     access-token-ttl-minutes: 480
     refresh-token-ttl-days: 7
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    operations-sorter: alpha
+    tags-sorter: alpha
