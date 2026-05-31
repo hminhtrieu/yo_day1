@@ -1,8 +1,13 @@
 package com.yo.day1.controllers;
 
+import com.yo.day1.common.ApiResponse;
+import com.yo.day1.common.exception.BadRequestException;
+import com.yo.day1.common.exception.NotFoundException;
 import com.yo.day1.domain.entity.Parent;
+import com.yo.day1.dto.parent.ParentDashboardResponse;
 import com.yo.day1.dto.parent.ParentResponse;
 import com.yo.day1.dto.parent.ParentUpsertRequest;
+import com.yo.day1.service.ParentPortalService;
 import com.yo.day1.service.ParentService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -53,5 +59,19 @@ public class ParentController {
     {
         parentService.deleteById(id);
         return ResponseEntity.ok("Xoa Parent Thanh Cong");
+    }
+    @RestController
+    @RequestMapping(value = "/api/parent")
+    @RequiredArgsConstructor
+    public class ParentPortalController {
+
+        private final ParentPortalService parentPortalService;
+
+        @GetMapping("/dashboard")
+        @PreAuthorize("hasRole('PARENT')")
+        public ApiResponse<ParentDashboardResponse> dashboard(Principal principal) throws BadRequestException, NotFoundException {
+            return ApiResponse.success(parentPortalService.getDashboard(principal.getName()));
+        }
+
     }
 }

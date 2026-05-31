@@ -36,7 +36,7 @@ public class StudentResponse {
     private String schoolName;
 
 
-    private BigDecimal lastScore = BigDecimal.ZERO;
+    private float lastScore;
 
 
     private String note;

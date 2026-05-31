@@ -25,6 +25,7 @@ public class StudentServiceImpl implements StudentService {
     private final ModelMapper mapper;
 
 
+
     public List<StudentResponse> findAll()
     {
         return studentRepository.findAll().stream()
@@ -111,5 +112,9 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudent(Long id) throws NotFoundException {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Student not found: " + id));
+    }
+    @Transactional(readOnly = true)
+    public List<StudentResponse> findByParentId(Long parentId) {
+        return studentRepository.findByParentId(parentId).stream().map(this::map).toList();
     }
 }
