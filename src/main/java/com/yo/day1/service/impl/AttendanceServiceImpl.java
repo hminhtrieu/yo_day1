@@ -6,7 +6,14 @@ import com.yo.day1.domain.enums.AttendanceStatus;
 import com.yo.day1.domain.enums.NotificationRecipientType;
 import com.yo.day1.domain.enums.NotificationType;
 import com.yo.day1.dto.attendance.AttendanceCreateRequest;
+import com.yo.day1.dto.attendance.AttendanceBatchRequest;
+import com.yo.day1.dto.attendance.AttendanceMatrixResponse;
+import com.yo.day1.dto.attendance.StudentAttendanceRowDto;
 import com.yo.day1.dto.attendance.AttendanceResponse;
+import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 import com.yo.day1.repository.AttendanceRepository;
 import com.yo.day1.repository.CourseClassRepository;
 import com.yo.day1.repository.NotificationRepository;
@@ -88,6 +95,74 @@ public class AttendanceServiceImpl implements AttendanceService {
         public List<AttendanceResponse> findByClassId(Long classId) {
             courseClassRepository.findById(classId);
             return attendanceRepository.findByCourseClassId(classId).stream().map(this::toResponse).toList();
+        }
+
+        @Transactional
+        public List<AttendanceResponse> createBatch(AttendanceBatchRequest request, String username) throws BadRequestException, NotFoundException {
+            CourseClass courseClass = courseClassRepository.findById(request.getCourseClassId()).orElseThrow(() -> new NotFoundException("Course class not found"));
+            User recorder = authService.findActiveUserByUsername(username);
+
+            List<Attendance> attendancesToSave = new ArrayList<>();
+            for (StudentAttendanceRowDto row : request.getAttendances()) {
+                Student student = studentRepository.findById(row.getStudentId()).orElseThrow(() -> new NotFoundException("Student not found"));
+                
+                // If exists, update. If not, create new
+                Attendance attendance = attendanceRepository.findByCourseClassId(request.getCourseClassId())
+                        .stream().filter(a -> a.getStudent().getId().equals(row.getStudentId()) && a.getAttendanceDate().equals(request.getAttendanceDate()))
+                        .findFirst().orElse(new Attendance());
+                
+                attendance.setStudent(student);
+                attendance.setCourseClass(courseClass);
+                attendance.setAttendanceDate(request.getAttendanceDate());
+                attendance.setStatus(row.getStatus());
+                attendance.setNote(row.getNote());
+                attendance.setRecordedByUser(recorder);
+                attendancesToSave.add(attendance);
+            }
+            
+            return attendanceRepository.saveAll(attendancesToSave).stream().map(this::toResponse).toList();
+        }
+
+        @Transactional(readOnly = true)
+        public AttendanceMatrixResponse getMatrix(Long classId) {
+            CourseClass courseClass = courseClassRepository.findById(classId).orElseThrow();
+            List<Attendance> allAttendances = attendanceRepository.findByCourseClassId(classId);
+            
+            AttendanceMatrixResponse response = new AttendanceMatrixResponse();
+            
+            // Get unique students from attendances and course class
+            List<AttendanceMatrixResponse.StudentInfo> students = new ArrayList<>();
+            // We should get all enrolled students for this class. For now, since we don't have EnrollmentRepository autowired, 
+            // we will extract students from the existing attendance records.
+            // Wait, this is better: Extract from attendance records.
+            Map<Long, AttendanceMatrixResponse.StudentInfo> studentMap = new HashMap<>();
+            
+            List<LocalDate> dates = allAttendances.stream().map(Attendance::getAttendanceDate).distinct().sorted().toList();
+            
+            Map<Long, Map<LocalDate, AttendanceStatus>> matrix = new HashMap<>();
+            Map<Long, Map<LocalDate, String>> notes = new HashMap<>();
+            
+            for (Attendance a : allAttendances) {
+                Long sid = a.getStudent().getId();
+                if (!studentMap.containsKey(sid)) {
+                    AttendanceMatrixResponse.StudentInfo si = new AttendanceMatrixResponse.StudentInfo();
+                    si.setId(sid);
+                    si.setFullname(a.getStudent().getFullname());
+                    si.setStudentCode(a.getStudent().getStudentCode());
+                    studentMap.put(sid, si);
+                }
+                matrix.computeIfAbsent(sid, k -> new HashMap<>()).put(a.getAttendanceDate(), a.getStatus());
+                if (a.getNote() != null) {
+                    notes.computeIfAbsent(sid, k -> new HashMap<>()).put(a.getAttendanceDate(), a.getNote());
+                }
+            }
+            
+            response.setStudents(new ArrayList<>(studentMap.values()));
+            response.setDates(dates);
+            response.setMatrix(matrix);
+            response.setNotes(notes);
+            
+            return response;
         }
 
         private void validateAttendanceDate(CourseClass courseClass, LocalDate attendanceDate) throws BadRequestException {

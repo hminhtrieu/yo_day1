@@ -13,4 +13,5 @@ public interface BillingService {
     InvoiceResponse createInvoice(InvoiceCreateRequest request) throws NotFoundException;
     List<InvoiceResponse> findInvoicesByStudent(Long studentId, String username) throws BadRequestException, NotFoundException;
     PaymentResponse createPayment(PaymentCreateRequest request, String username) throws NotFoundException, BadRequestException;
+    List<PaymentResponse> getAllPayments();
 }

@@ -1,0 +1,849 @@
+﻿package com.yo.day1.dto.attendance;
+
+import com.yo.day1.domain.entity.CourseClass;
+import com.yo.day1.domain.entity.Student;
+import com.yo.day1.domain.entity.User;
+import com.yo.day1.domain.enums.AttendanceStatus;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+public class AttendanceCreateRequest {
+    @NotNull
+    Long courseClassId;
+    @NotNull
+    Long studentId;
+    @NotNull
+    LocalDate attendanceDate;
+    @NotNull
+    AttendanceStatus status;
+    @Size(max = 255) String note;
+}
+package com.yo.day1.dto.attendance;
+
+import com.yo.day1.domain.entity.CourseClass;
+import com.yo.day1.domain.entity.Student;
+import com.yo.day1.domain.entity.User;
+import com.yo.day1.domain.enums.AttendanceStatus;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+public class AttendanceResponse {
+ // tai sao ko lam truy xuat... ko duoc de ko truy xuat nen co truy xuat cho tuong minh
+    Long id;
+    Long courseClassId;
+    String className;
+    Long studentId;
+    String studentName;
+    LocalDate attendanceDate;
+    String status;
+    String note;
+    Long recordedByUserId;
+    String recordedByUsername;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.auth;
+
+import java.time.Instant;
+
+public record AuthResponse(
+        String accessToken,
+        String refreshToken,
+        String tokenType,
+        Instant expiresAt,
+        Instant refreshExpiresAt,
+        CurrentUserResponse user
+
+) {
+
+}
+package com.yo.day1.dto.auth;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record ChangePasswordRequest(
+        @NotBlank String currentPassword,
+        @NotBlank @Size(min = 6, max = 72) String newPassword
+) {
+}
+package com.yo.day1.dto.auth;
+
+public record CurrentUserResponse (
+        Long id,
+        String username,
+        String fullname,
+        String role,
+        Long parentId,
+        Long teacherId
+){
+}
+package com.yo.day1.dto.auth;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequest(
+        @NotBlank String username,
+        @NotBlank String password
+) {
+}
+package com.yo.day1.dto.auth;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record RefreshTokenRequest(
+        @NotBlank String refreshToken
+) {
+}
+package com.yo.day1.dto.billing;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+public class InvoiceCreateRequest {
+
+        //@Schema(description = "Unique invoice code.", example = "INV-2026-001")
+        @NotNull
+        String invoiceCode;
+        //@Schema(description = "Student identifier receiving the invoice.", example = "1")
+
+        @NotNull
+        Long studentId;
+
+        //@Schema(description = "Course class identifier billed.", example = "3")
+        @NotNull
+        Long courseClassId;
+        //@Schema(description = "Billing month represented by a date in that month.", example = "2026-06-01")
+
+        @NotNull
+        LocalDate billingMonth;
+
+        //@Schema(description = "Original amount before discount.", example = "2800000", nullable = true)
+        @DecimalMin("0.0")
+        float originalAmount;
+
+        //@Schema(description = "Optional promotion identifier.", example = "2", nullable = true)
+        Long promotionId;
+
+        //@Schema(description = "Payment due date.", example = "2026-06-15", nullable = true)
+        LocalDate dueDate;
+
+        //@Schema(description = "Extra billing note.", example = "Early bird discount applied.", nullable = true)
+        @Size(max = 255)
+        String note;
+    }
+
+package com.yo.day1.dto.billing;
+
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+    @Data
+    public class InvoiceResponse {
+
+        //@Schema(description = "Invoice identifier.", example = "1")
+        Long id;
+
+        //@Schema(description = "Invoice code.", example = "INV-2026-001")
+        String invoiceCode;
+
+        //@Schema(description = "Student identifier.", example = "1")
+        Long studentId;
+
+        //@Schema(description = "Student full name.", example = "Nguyen Van A")
+        String studentName;
+
+        //@Schema(description = "Course class identifier.", example = "3")
+        Long courseClassId;
+
+        //@Schema(description = "Course class name.", example = "English Beginner - Morning")
+        String className;
+
+        //@Schema(description = "Billing month.", example = "2026-06-01")
+        LocalDate billingMonth;
+
+        //@Schema(description = "Original amount before discount.", example = "2800000")
+        float originalAmount;
+
+        //@Schema(description = "Discount amount applied.", example = "300000")
+        float discountAmount;
+
+        //@Schema(description = "Final amount after discount.", example = "2500000")
+        float finalAmount;
+
+        //@Schema(description = "Amount already paid.", example = "1000000")
+        float amountPaid;
+
+        //@Schema(description = "Remaining balance.", example = "1500000")
+        float balanceAmount;
+
+        //@Schema(description = "Invoice status.", example = "PARTIALLY_PAID")
+        String status;
+
+        //@Schema(description = "Promotion identifier.", example = "2", nullable = true)
+        Long promotionId;
+
+        //@Schema(description = "Promotion name.", example = "Summer discount", nullable = true)
+        String promotionName;
+
+        //@Schema(description = "Due date.", example = "2026-06-15", nullable = true)
+        LocalDate dueDate;
+
+        //@Schema(description = "Billing note.", example = "Early bird discount applied.", nullable = true)
+        String note;
+
+        //@Schema(description = "Creation timestamp.", example = "2026-05-24T10:00:00")
+        LocalDateTime createdAt;
+
+        //@Schema(description = "Last update timestamp.", example = "2026-05-24T11:30:00")
+        LocalDateTime updatedAt;
+    }
+package com.yo.day1.dto.course;
+
+import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CourseResponse {
+
+    private Long id;
+    private String courseCode;
+
+    private String name;
+
+    private String decsciption;
+    private double tuitionFee;
+
+    private int totalSessions;
+    private byte isActive;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.course;
+
+
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CourseUpsertRequest {
+    @Size(min = 2, max = 10)
+    private String courseCode;
+
+    @Size(min = 2, max = 20)
+    private String name;
+
+    @Size(max = 500)
+    private String decsciption;
+
+    @PositiveOrZero
+    private double tuitionFee;
+
+    @Min(1)
+    private int totalSessions;
+
+    @Min(0)
+    @Max(1)
+    private byte isActive;
+}
+package com.yo.day1.dto.courseclass;
+
+
+import com.yo.day1.domain.entity.Course;
+import com.yo.day1.domain.entity.Room;
+import com.yo.day1.domain.entity.ScheduleSlot;
+import com.yo.day1.domain.entity.Teacher;
+import com.yo.day1.domain.enums.ClassStatus;
+import com.yo.day1.dto.course.CourseResponse;
+import com.yo.day1.dto.room.RoomResponse;
+import com.yo.day1.dto.teacher.TeacherResponse;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CourseClassResponse {
+
+    private Long id;
+    private String classCode;
+    private String name;
+    private CourseResponse course;
+    private RoomResponse room;
+    private ScheduleSlot slot;
+    private TeacherResponse mainTeacher;
+    private TeacherResponse assistantTeacher;
+    private LocalDate startTime;
+    private LocalDate endTime;
+    private int maxStudents;
+    private Double tuitionFee;
+    private ClassStatus status;
+}
+package com.yo.day1.dto.courseclass;
+
+
+import com.yo.day1.domain.enums.ClassStatus;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+public class CourseClassUpsertRequest {
+        @NotBlank @Size(max = 20) String ClassCode;
+        @NotBlank @Size(max = 100) String name;
+        @NotNull Long courseId;
+        @NotNull Long roomId;
+        @NotNull Long scheduleSlotId;
+        @NotNull Long mainteacherId;
+        Long assistantTeacherId;
+        @NotNull LocalDate startDate;
+        LocalDate endDate;
+        @NotNull @Min(1)
+        Integer maxStudents;
+        @NotNull @DecimalMin("0.0")
+        Double tuitionFee;
+        @NotNull ClassStatus status;
+
+}
+package com.yo.day1.dto.enrollment;
+
+import com.yo.day1.domain.enums.EnrollmentStatus;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+public class EnrollmentCreateRequest {
+    @NotNull
+    private Long studentId;
+
+    @NotNull
+    private Long courseClassId;
+
+    @NotNull
+    private LocalDate enrolledAt;
+
+    @NotNull
+    private EnrollmentStatus status;
+
+    @Size(max = 255)
+    private String note;
+}
+package com.yo.day1.dto.enrollment;
+
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+public class EnrollmentResponse {
+    private Long id;
+    private Long studentId;
+    private String studentName;
+    private Long courseClassId;
+    private String className;
+    private LocalDate enrolledAt;
+    private String status;
+    private String note;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.learningresult;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Data
+public class LearningResultCreateRequest {
+
+    @NotNull
+    private Long studentId;
+    @NotNull
+    private Long courseClassId;
+    @NotNull
+    private LocalDate resultMonth;
+    @DecimalMin("0.0")
+    private BigDecimal score;
+    private String teacherComment;
+}
+package com.yo.day1.dto.learningresult;
+
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+public class LearningResultResponse {
+    private Long id;
+    private Long studentId;
+    private String studentName;
+    private Long courseClassId;
+    private String className;
+    private LocalDate resultMonth;
+    private BigDecimal score;
+    private String teacherComment;
+    private Long createdByUserId;
+    private String createdByUsername;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.parent;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class InvoiceCard {
+    private Long id;
+    private String invoiceCode;
+    private String studentName;
+    private String className;
+    private LocalDate billingMonth;
+    private float finalAmount;
+    private float amountPaid;
+    private float balanceAmount;
+    private String status;
+    private LocalDate dueDate;
+}
+package com.yo.day1.dto.parent;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class NotificationCard {
+    public Long id;
+    public String type;
+    public String title;
+    public String content;
+    public Boolean isRead;
+    public LocalDateTime createdAt;
+}
+package com.yo.day1.dto.parent;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ParentDashboardResponse {
+    private Long parentId;
+    private String parentName;
+    private String username;
+    private List<StudentCard> students;
+    private List<InvoiceCard> invoices;
+    private List<NotificationCard> notifications;
+}
+package com.yo.day1.dto.parent;
+
+
+import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ParentResponse {
+
+    private Long id;
+
+    private String fullname;
+
+    private String phone;
+
+    private String email;
+
+    private String address;
+
+    private String relationship;
+}
+package com.yo.day1.dto.parent;
+
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ParentUpsertRequest {
+
+    @Size(min = 2, max= 20)
+    private String fullname;
+
+    @Pattern(regexp = "^(84|0[35789])+([0-9]{8})$")
+    @NotBlank
+    private String phone;
+
+    @Email
+    private String email;
+
+    @Size(min = 2, max = 35)
+    private String address;
+
+    private String relationship;
+}
+package com.yo.day1.dto.parent;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class StudentCard {
+    private Long id;
+    private String studentCode;
+    private String fullName;
+    private String status;
+    private float latestScore;
+}
+package com.yo.day1.dto.payment;
+
+import com.yo.day1.domain.enums.PaymentMethod;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Data
+public class PaymentCreateRequest {
+    @NotNull
+    private Long invoiceId;
+    @NotBlank
+    private String paymentCode;
+    @NotNull
+    private float paidAmount;
+    @NotNull
+    private PaymentMethod paymentMethod;
+    @NotNull
+    private LocalDateTime paidAt;
+    @Size(max = 255) String note;
+}
+package com.yo.day1.dto.payment;
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+public class PaymentResponse {
+    private Long id;
+    private Long invoiceId;
+    private String invoiceCode;
+    private String paymentCode;
+    private float paidAmount;
+    private String paymentMethod;
+    private LocalDateTime paidAt;
+    private Long cashierUserId;
+    private String cashierUsername;
+    private String note;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.room;
+
+import jakarta.persistence.Column;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+public class RoomResponse {
+
+    private Long id;
+    private String roomCode;
+
+    private String name;
+
+    private int capacity;
+
+    private String description;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.room;
+
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import java.time.LocalDateTime;
+
+@Data
+public class RoomUpsertRequest {
+
+    @Length(min = 1,max = 20)
+    private String roomCode;
+
+    @Length(min = 1, max = 100)
+    private String name;
+
+    @Min(1)
+    private int capacity;
+
+    private String description;
+
+}
+package com.yo.day1.dto.student;
+
+import com.yo.day1.domain.entity.Parent;
+import com.yo.day1.domain.enums.Gender;
+import com.yo.day1.domain.enums.StudentStatus;
+import com.yo.day1.dto.parent.ParentResponse;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class StudentResponse {
+
+    private Long id;
+
+    private String studentCode;
+
+
+    private String fullname;
+
+
+    private LocalDate dateOfBirth;
+
+    private String gradeLevel;
+
+
+    private String schoolName;
+
+
+    private float lastScore;
+
+
+    private String note;
+
+
+    private String phone;
+
+
+    private Gender gender = Gender.OTHER;
+
+    private ParentResponse parent;
+
+    private StudentStatus status = StudentStatus.ACTIVE;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.student;
+
+import com.yo.day1.domain.entity.Parent;
+import com.yo.day1.domain.enums.Gender;
+import com.yo.day1.domain.enums.StudentStatus;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class StudentUpsertRequest {
+
+    @Size(min = 2, max= 100)
+    private String studentCode;
+
+    @Size(min = 2, max= 10)
+    private String fullname;
+
+
+    private LocalDate dateOfBirth;
+
+
+    @NotNull
+    private String gradeLevel;
+
+
+    private String schoolName;
+
+    @Min(value = 0)
+    @Max(value = 10)
+    private BigDecimal lastScore = BigDecimal.ZERO;
+
+
+    private String note;
+
+    @Pattern(regexp = "^(84|0[35789])+([0-9]{8})$")
+    @NotBlank
+    private String phone;
+
+
+    private Gender gender = Gender.OTHER;
+
+    @Min(1)
+    private Long parentId;
+
+
+    private StudentStatus status = StudentStatus.ACTIVE;
+
+
+}
+package com.yo.day1.dto.teacher;
+
+import com.yo.day1.domain.enums.TeacherRole;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TeacherResponse {
+
+    private Long id;
+    private String teacherCode;
+
+    private String fullname;
+
+    private String phone;
+
+    private String email;
+
+    private TeacherRole teacherRole;
+
+    private String cccdImageUrl;
+
+    private boolean isActive = true;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+}
+package com.yo.day1.dto.teacher;
+
+import com.yo.day1.domain.enums.TeacherRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TeacherUpsertRequest {
+
+    @Size(min = 2, max = 10)
+    private String teacherCode;
+
+    @Size(min = 2, max = 20)
+    private String fullname;
+
+    @Pattern(regexp = "^(84|0[35789])+([0-9]{8})$")
+    @NotBlank
+    private String phone;
+
+    @Email
+    private String email;
+
+    @NotBlank
+    private TeacherRole teacherRole = TeacherRole.BOTH;
+
+    @NotBlank
+    private String cccdImageUrl;
+
+    private boolean isActive = true;
+}

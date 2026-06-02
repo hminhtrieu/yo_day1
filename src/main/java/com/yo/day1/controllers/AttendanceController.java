@@ -3,7 +3,9 @@ package com.yo.day1.controllers;
 
 import com.yo.day1.common.ApiResponse;
 import com.yo.day1.common.exception.NotFoundException;
+import com.yo.day1.dto.attendance.AttendanceBatchRequest;
 import com.yo.day1.dto.attendance.AttendanceCreateRequest;
+import com.yo.day1.dto.attendance.AttendanceMatrixResponse;
 import com.yo.day1.dto.attendance.AttendanceResponse;
 import com.yo.day1.service.AttendanceService;
 import jakarta.validation.Valid;
@@ -31,5 +33,17 @@ public class AttendanceController {
     @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_STAFF')")
     public ApiResponse<List<AttendanceResponse>> findByClassId(@PathVariable Long classId) {
         return ApiResponse.success(attendanceService.findByClassId(classId));
+    }
+
+    @PostMapping("/batch")
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_STAFF','TEACHER')")
+    public ApiResponse<List<AttendanceResponse>> createBatch(@Valid @RequestBody AttendanceBatchRequest request, Principal principal) throws BadRequestException, NotFoundException {
+        return ApiResponse.success("Batch attendance saved", attendanceService.createBatch(request, principal.getName()));
+    }
+
+    @GetMapping("/matrix/{classId}")
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_STAFF','TEACHER')")
+    public ApiResponse<AttendanceMatrixResponse> getMatrix(@PathVariable Long classId) {
+        return ApiResponse.success(attendanceService.getMatrix(classId));
     }
 }

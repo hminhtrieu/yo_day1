@@ -12,6 +12,7 @@ public interface EnrollmentService {
     EnrollmentResponse create(EnrollmentCreateRequest request) throws BadRequestException, NotFoundException;
 
     List<EnrollmentResponse> findByClassId(Long classId);
+    List<EnrollmentResponse> findByStudentId(Long studentId);
 
     Enrollment getEnrollment(Long studentId, Long classId) throws BadRequestException;
 }

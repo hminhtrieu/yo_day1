@@ -59,4 +59,10 @@ import java.util.List;
     public ApiResponse<PaymentResponse> createPayment(@Valid @RequestBody PaymentCreateRequest request, Principal principal) throws NotFoundException, BadRequestException {
         return ApiResponse.success("Payment created", billingService.createPayment(request, principal.getName()));
     }
+
+    @GetMapping("/payments/all")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','ACADEMIC_STAFF')")
+    public ApiResponse<List<PaymentResponse>> getAllPayments() {
+        return ApiResponse.success(billingService.getAllPayments());
     }
+}

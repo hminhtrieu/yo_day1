@@ -18,7 +18,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_STAFF','PARENT'.'TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','ACADEMIC_STAFF','PARENT','TEACHER')")
     public ApiResponse<List<RoomResponse>> findAll()
     {
         return ApiResponse.success(roomService.findAll());

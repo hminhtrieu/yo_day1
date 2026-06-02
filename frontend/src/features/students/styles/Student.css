@@ -1,0 +1,82 @@
+.student-page-container {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: 100%;
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.student-header h1 {
+  font-size: 1.75rem;
+  color: #1e293b;
+  font-weight: 700;
+  margin: 0;
+}
+
+.student-toolbar {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Badge specific to student status */
+.status-paused {
+  background-color: #fef08a;
+  color: #854d0e;
+}
+
+.status-dropped {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Detail Modal Styles */
+.detail-card {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.detail-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #334155;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+
+.detail-label {
+  width: 140px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.detail-value {
+  color: #0f172a;
+  flex: 1;
+}
+
+/* Modal sizing */
+.modal-content.large {
+  max-width: 800px;
+}
+
+.btn-view:hover {
+  color: #10b981;
+  background-color: #ecfdf5;
+}

@@ -151,6 +151,10 @@ public class BillingServiceImpl implements BillingService {
         return response;
     }
 
+    @Transactional(readOnly = true)
+    public List<PaymentResponse> getAllPayments() {
+        return paymentRepository.findAll().stream().map(this::toPaymentResponse).toList();
+    }
 }
 
 
