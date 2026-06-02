@@ -11,6 +11,7 @@ import com.yo.day1.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +23,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final ParentRepository parentRepository;
     private final ModelMapper mapper;
+
 
 
     public List<StudentResponse> findAll()
@@ -45,8 +47,6 @@ public class StudentServiceImpl implements StudentService {
     {
         Student stu = mapper.map(req,Student.class);
         parentRepository.findById(req.getParentId()).ifPresent(p->stu.setParent(p));
-        stu.setCreatedAt(LocalDateTime.now());
-        stu.setUpdatedAt(LocalDateTime.now());
         Student result = studentRepository.save(stu);
         return map(result);
     }
@@ -56,8 +56,6 @@ public class StudentServiceImpl implements StudentService {
         Student stu = mapper.map(req,Student.class);
         stu.setId(id);
         parentRepository.findById(req.getParentId()).ifPresent(p->stu.setParent(p));
-        stu.setCreatedAt(LocalDateTime.now());
-        stu.setUpdatedAt(LocalDateTime.now());
         Student result = studentRepository.save(stu);
         return map(result);
     }
@@ -101,5 +99,22 @@ public class StudentServiceImpl implements StudentService {
 
         return result;
 
+    }
+    @Transactional(readOnly = true)
+    public Student getStudentForParent(Long studentId, Long parentId) throws NotFoundException {
+        Student student = getStudent(studentId);
+        if (student.getParent() == null || !student.getParent().getId().equals(parentId)) {
+            throw new org.springframework.security.access.AccessDeniedException("Student does not belong to current parent account");
+        }
+        return student;
+    }
+
+    public Student getStudent(Long id) throws NotFoundException {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Student not found: " + id));
+    }
+    @Transactional(readOnly = true)
+    public List<StudentResponse> findByParentId(Long parentId) {
+        return studentRepository.findByParentId(parentId).stream().map(this::map).toList();
     }
 }
